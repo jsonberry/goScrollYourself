@@ -1,96 +1,22 @@
 var config = {
-    desktopTiming: 1650,
-    mobileTiming: 2500,
+    desktopTiming: 100,
+    mobileTiming: 100,
     scrollCheckThreshold: 3,
     onDown: doDownThings,
     onUp: doUpThings
 }
 
 function doDownThings () {
-  var elem = "<p>I scrolled down</p>"
-  document.querySelector('body').insertAdjacentHTML('beforebegin', elem)
+    document.location = "#section2"
 }
 
 function doUpThings () {
-  var elem = "<p>I scrolled up</p>"
-  document.querySelector('body').insertAdjacentHTML('beforebegin', elem)
+    document.location = "#section1"
 }
 
 /*
-*    Instantiate State Object
-*/
-Object.assign(window, {
-    goScrollYourself: {
-        scrolling: false,
-        scrollYCache: 0,
-        checkCount: 0,
-        hydrate: function () {
-           this.scrolling = false,
-           this.scrollYCache = window.scrollY
-           this.checkCount = 0
-        }
-    }
-})
-
-/*
-*    Add scroll listener for desktop
-*/
-addWheelListener( window, function(e) {
-    catchStream(e, config.desktopTiming);
-    e.preventDefault()
-})
-
-/*
-*    Add scroll listener for mobile
-*/
-window.addEventListener('scroll', function (e) {
-    catchStream(e, config.mobileTiming)
-    e.preventDefault()
-})
-
-function catchStream (e, timing) {
-    if (goScrollYourself.scrolling) return
-    goScrollYourself.scrolling = true
-    determineDirection.apply(this, arguments)
-}
-
-function determineDirection (e, timing) {
-    if (e.deltaY > 0 || window.scrollY > goScrollYourself.scrollYCache) {
-        scrolledDown(timing)
-    } else {
-      scrolledUp(timing)
-    }
-}
-
-function scrolledDown (timing) {
-    config.onDown()
-    setTimeout(function () {
-        checkDoneScrolling()
-    }, timing)
-}
-
-function scrolledUp (timing) {
-    config.onUp()
-    setTimeout(function () {
-        checkDoneScrolling()
-    }, timing)
-}
-
-function checkDoneScrolling () {
-    if (!window.scrollY === goScrollYourself.scrollYCache) {
-        checkDoneScrolling()
-    } else {
-      if (goScrollYourself.checkCount < config.scrollCheckThreshold) {
-          goScrollYourself.checkCount++
-          checkDoneScrolling()
-        } else {
-            goScrollYourself.hydrate()
-        }
-    }
-}
-
-/*
-*    https://developer.mozilla.org/en-US/docs/Web/Events/wheel#Listening_to_this_event_across_browser
+*   Add desktop cross browser support for listening to mousewheel events
+*   https://developer.mozilla.org/en-US/docs/Web/Events/wheel#Listening_to_this_event_across_browser
 */
 (function(window,document) {
 
@@ -155,3 +81,70 @@ function checkDoneScrolling () {
     }
 
 })(window,document);
+
+/*
+*   Instantiate State
+*/
+window.goScrollYourself = {
+        scrolling: false,
+        mobileScrolling: false,
+        scrollYCache: 0,
+        timeoutId: void 0,
+        hydrate: function () {
+            this.scrolling = false
+            this.mobileScrolling = false
+            this.scrollYCache = window.scrollY
+            clearTimeout(this.timeoutId)
+            this.timeoutId = void 0
+        }
+    }
+
+/*
+*   Add scroll listener for desktop
+*/
+addWheelListener(window, function(e) {
+    catchStream(e, config.desktopTiming);
+    e.preventDefault()
+})
+
+/*
+*   Add scroll listener for mobile
+*/
+window.addEventListener('touchmove', function(e) {
+    goScrollYourself.mobileScrolling = true
+    // e.preventDefault()
+})
+window.addEventListener('touchend', function(e) {
+    if (goScrollYourself.mobileScrolling) {
+        catchStream(e, config.mobileTiming)
+    }
+})
+
+function catchStream (e, timing) {
+    if (typeof goScrollYourself.timeoutId === 'number') {
+        clearTimeout(goScrollYourself.timeoutId)
+        goScrollYourself.timeoutId = void 0
+    }
+
+    determineDirection.apply(this, arguments)
+}
+
+function determineDirection (e, timing) {
+    var direction
+    if (e.deltaY > 0 || window.scrollY > goScrollYourself.scrollYCache) {
+        direction = 'onDown'
+    } else {
+        direction = 'onUp'
+    }
+    onScroll(direction, timing)
+}
+
+function onScroll (direction, timing) {
+    if (!goScrollYourself.scrolling) {
+        config[direction]()
+        goScrollYourself.scrolling = true
+    }
+    goScrollYourself.timeoutId = setTimeout(function () {
+        goScrollYourself.hydrate()
+    }, timing)
+}

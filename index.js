@@ -1,7 +1,6 @@
 var config = {
     desktopTiming: 100,
     mobileTiming: 100,
-    scrollCheckThreshold: 3,
     onDown: doDownThings,
     onUp: doUpThings
 }

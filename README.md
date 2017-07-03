@@ -17,7 +17,7 @@ It utilizes the mousewheel cross browser script found here at MDN: https://devel
 
 Pull reqs welcome!
 
-_MIT Licensed
+### MIT Licensed
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights

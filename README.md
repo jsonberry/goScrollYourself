@@ -2,7 +2,7 @@
 Cross platform and legacy browser support for triggering on scroll
 
 ## Use case
-Triggering off of scrolling events across multiple platforms while maintaining cross browser support back through IE 10.asasdf
+Triggering off of scrolling events across multiple platforms while maintaining cross browser support back through IE 10.
 This was required in a Hype animation: http://tumult.com/hype/
 Some of the other requirements:
 * No 3rd party libraries

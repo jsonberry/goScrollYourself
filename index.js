@@ -82,7 +82,7 @@ function doUpThings () {
 })(window,document);
 
 /*
-*   Instantiate State
+*   Initiate State
 */
 window.goScrollYourself = {
         scrolling: false,
@@ -95,31 +95,33 @@ window.goScrollYourself = {
             this.scrollYCache = window.scrollY
             clearTimeout(this.timeoutId)
             this.timeoutId = void 0
+            console.log('THE GOD DAMN COAST IS CLEAR, HYDRATE THIS BITCH')
         }
     }
 
 /*
 *   Add scroll listener for desktop
 */
-addWheelListener(window, function(e) {
+addWheelListener(window, function handleWheelMove (e) {
     catchStream(e, config.desktopTiming);
     e.preventDefault()
 })
 
 /*
-*   Add scroll listener for mobile
+*   Add scroll listeners for mobile/touch screens
 */
-window.addEventListener('touchmove', function(e) {
+window.addEventListener('touchmove', function handleTouchMove (e) {
+    // This is to force movement as a requirement instead of firing on a screen tap
     goScrollYourself.mobileScrolling = true
-    // e.preventDefault()
 })
-window.addEventListener('touchend', function(e) {
+window.addEventListener('touchend', function handleTouchEnd (e) {
     if (goScrollYourself.mobileScrolling) {
         catchStream(e, config.mobileTiming)
     }
 })
 
 function catchStream (e, timing) {
+    console.log('errmergeerrrddd everything is a streaaaammmmmm')
     if (typeof goScrollYourself.timeoutId === 'number') {
         clearTimeout(goScrollYourself.timeoutId)
         goScrollYourself.timeoutId = void 0
@@ -140,6 +142,9 @@ function determineDirection (e, timing) {
 
 function onScroll (direction, timing) {
     if (!goScrollYourself.scrolling) {
+        // Only fire the desired cb once
+        // Can be fired again after rehydration
+        console.log('FIRE THE MOTHER FUCKING CALLBACK')
         config[direction]()
         goScrollYourself.scrolling = true
     }

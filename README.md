@@ -9,7 +9,7 @@ This was required in a Hype animation: http://tumult.com/hype/, some of the othe
 * No JS transpiling
 
 ## How do things
-Copypasta the `index.js` into wherever scripts are happy. Update the config object as needed, like adding functions to get called in the `onDown` and `onUp` properties.
+Copypasta the contents of `index.js` into wherever scripts are happy. Update the config object as needed, like adding functions to get called in the `onDown` and `onUp` properties.
 
 This is functional, but definitely a WIP.
 It utilizes the mousewheel cross browser script found here at MDN: https://developer.mozilla.org/en-US/docs/Web/Events/wheel#Listening_to_this_event_across_browser, and magic.

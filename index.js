@@ -88,6 +88,7 @@ window.goScrollYourself = {
         scrolling: false,
         mobileScrolling: false,
         scrollYCache: 0,
+        touchStartY: 0,
         timeoutId: void 0,
         hydrate: function () {
             this.scrolling = false
@@ -110,6 +111,10 @@ addWheelListener(window, function handleWheelMove (e) {
 /*
 *   Add scroll listeners for mobile/touch screens
 */
+window.addEventListener('touchstart', function handleTouchMove (e) {
+    // This is to force movement as a requirement instead of firing on a screen tap
+    goScrollYourself.touchStartY = e.touches[0].clientY
+})
 window.addEventListener('touchmove', function handleTouchMove (e) {
     // This is to force movement as a requirement instead of firing on a screen tap
     goScrollYourself.mobileScrolling = true
@@ -121,7 +126,6 @@ window.addEventListener('touchend', function handleTouchEnd (e) {
 })
 
 function catchStream (e, timing) {
-    console.log('errmergeerrrddd everything is a streaaaammmmmm')
     if (typeof goScrollYourself.timeoutId === 'number') {
         clearTimeout(goScrollYourself.timeoutId)
         goScrollYourself.timeoutId = void 0
@@ -131,8 +135,12 @@ function catchStream (e, timing) {
 }
 
 function determineDirection (e, timing) {
-    var direction
-    if (e.deltaY > 0 || window.scrollY > goScrollYourself.scrollYCache) {
+    var direction, deltaY
+    if (e.changedTouches) {
+        deltaY = goScrollYourself.touchStartY - e.changedTouches[0].clientY
+        console.log(deltaY)
+    }
+    if (e.deltaY > 0 || window.scrollY > goScrollYourself.scrollYCache || deltaY > 0) {
         direction = 'onDown'
     } else {
         direction = 'onUp'

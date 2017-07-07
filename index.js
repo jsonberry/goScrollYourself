@@ -138,7 +138,6 @@ function determineDirection (e, timing) {
     var direction, deltaY
     if (e.changedTouches) {
         deltaY = goScrollYourself.touchStartY - e.changedTouches[0].clientY
-        console.log(deltaY)
     }
     if (e.deltaY > 0 || window.scrollY > goScrollYourself.scrollYCache || deltaY > 0) {
         direction = 'onDown'

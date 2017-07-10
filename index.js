@@ -86,17 +86,14 @@ function doUpThings () {
 */
 window.goScrollYourself = {
         scrolling: false,
-        mobileScrolling: false,
-        scrollYCache: 0,
+        touchScrolling: false,
         touchStartY: 0,
         timeoutId: void 0,
         hydrate: function () {
             this.scrolling = false
-            this.mobileScrolling = false
-            this.scrollYCache = window.scrollY
+            this.touchScrolling = false
             clearTimeout(this.timeoutId)
             this.timeoutId = void 0
-            console.log('THE GOD DAMN COAST IS CLEAR, HYDRATE THIS BITCH')
         }
     }
 
@@ -111,16 +108,17 @@ addWheelListener(window, function handleWheelMove (e) {
 /*
 *   Add scroll listeners for mobile/touch screens
 */
-window.addEventListener('touchstart', function handleTouchMove (e) {
-    // This is to force movement as a requirement instead of firing on a screen tap
+window.addEventListener('touchstart', function handleTouchStart (e) {
     goScrollYourself.touchStartY = e.touches[0].clientY
 })
+
 window.addEventListener('touchmove', function handleTouchMove (e) {
-    // This is to force movement as a requirement instead of firing on a screen tap
-    goScrollYourself.mobileScrolling = true
+    goScrollYourself.touchScrolling = true
 })
+
 window.addEventListener('touchend', function handleTouchEnd (e) {
-    if (goScrollYourself.mobileScrolling) {
+    // Only fire if there has been movement
+    if (goScrollYourself.touchScrolling) {
         catchStream(e, config.mobileTiming)
     }
 })
@@ -135,26 +133,23 @@ function catchStream (e, timing) {
 }
 
 function determineDirection (e, timing) {
-    var direction, deltaY
-    if (e.changedTouches) {
-        deltaY = goScrollYourself.touchStartY - e.changedTouches[0].clientY
-    }
-    if (e.deltaY > 0 || window.scrollY > goScrollYourself.scrollYCache || deltaY > 0) {
+    var direction = 'onUp'
+    var deltaY = e.changedTouches ? goScrollYourself.touchStartY - e.changedTouches[0].clientY : null
+
+    if (e.deltaY > 0 || deltaY > 0) {
         direction = 'onDown'
-    } else {
-        direction = 'onUp'
     }
+
     onScroll(direction, timing)
 }
 
 function onScroll (direction, timing) {
     if (!goScrollYourself.scrolling) {
-        // Only fire the desired cb once
-        // Can be fired again after rehydration
-        console.log('FIRE THE MOTHER FUCKING CALLBACK')
+        // Fire the CB only once at the start of a scroll, but no subsequent calls while scrolling
         config[direction]()
         goScrollYourself.scrolling = true
     }
+
     goScrollYourself.timeoutId = setTimeout(function () {
         goScrollYourself.hydrate()
     }, timing)

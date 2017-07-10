@@ -3,7 +3,7 @@ Cross platform and legacy browser support for triggering on scroll
 * Fire only once at the beginning of a scroll
 * No subsequent callbacks fired during a scroll/inertia
 * Determines direction of the scroll/touch
-* IE (10) / Firefox / Safari / Chrome / iOS / Android
+* IE (10) / Edge / Firefox / Safari / Chrome / iOS / Android
 
 ## Use case
 Triggering off of scrolling events across multiple platforms while maintaining cross browser support back through IE 10.

@@ -7,13 +7,18 @@ Cross platform and legacy browser support for triggering on scroll
 
 ## Use case
 Triggering off of scrolling events across multiple platforms while maintaining cross browser support back through IE 10.
-This was required in a Hype animation: http://tumult.com/hype/, some of the other requirements included:
+This was required in a Hype animation: http://tumult.com/hype/.
+
+Our requirements included:
 * No 3rd party libraries
 * No ES6+
 * No JS transpiling
+* Trigger callback on up scroll
+* Trigger callback on down scroll
+* No subsequent function calls during scroll (like the inertia from a trackpad)
 
 ## How do things
-Copypasta the contents of `index.js` into wherever scripts are happy. Update the config object as needed, like adding functions to get called in the `onDown` and `onUp` properties.
+Copypasta the contents of `index.js` into wherever scripts are happy. Update the config object as needed, like adding functions to get called in the `onDown` and `onUp` properties. If you're seeing multiple calls when scrolling, try adjusting the timing in the config object.
 
 This is functional, but definitely a WIP.
 It utilizes the mousewheel cross browser script found here at MDN: https://developer.mozilla.org/en-US/docs/Web/Events/wheel#Listening_to_this_event_across_browser, and magic.
